@@ -30,4 +30,51 @@ footer {
     background-color: #f0f0f0;
     box-shadow: 0 0 1em #aaaaaa;
     font-size: 30px;
+    font-weight: bolder;
+}
+
+.footer-white {
+    background-color: #f0f0f0;
+    color: black;
+}
+
+.footer-red {
+    background-color: red;
+    color: white;
+}
+
+.footer-black {
+    background-color: black;
+    color: white;
+}
+
+footer div.speech-details {
+    height: 40px;
+    width: 30%;
+    background-color: white;
+    color: black;
+    display: none;
+}
+
+footer div.clock-functions {
+    height: 40px;
+    width: 30%;
+    background-color: white;
+    color: black;
+    display: none;
+}
+
+footer div.clock-view {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+footer div.clock-stop {
+    height: 20px;
+    width: 20px;
+    background-color: gray;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-left: 5px;
 }

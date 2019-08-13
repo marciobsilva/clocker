@@ -5,12 +5,6 @@ const speechModel = [
     'title', 'time', 'day_id'
 ];
 
-const whatTimeIsIt = () => {
-    const date = new Date();
-
-    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-};
-
 const startSpeech = (pathToSpeech, pathToLastCommand, idSpeech) => {
     var response = null;
 
@@ -21,7 +15,7 @@ const startSpeech = (pathToSpeech, pathToLastCommand, idSpeech) => {
         speeches.map( speech => {
             if(speech.id == idSpeech) {
                 delete speech.stoppedAt;
-                speech.startedAt = whatTimeIsIt();
+                speech.startedAt = new Date();
                 response = speech;
             }
         });
@@ -49,7 +43,7 @@ const stopSpeech = (pathToSpeech, pathToLastCommand) => {
         speeches = utils.readFile(pathToSpeech);
         speeches.map( speech => {
             if(speech.id == lastCommand.speech.id) {
-                speech.stoppedAt = whatTimeIsIt();
+                speech.stoppedAt = new Date();
                 response = speech;
             }
         });

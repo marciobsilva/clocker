@@ -7,7 +7,31 @@ export default class ListaDiscursos extends Component {
   state = {
     discursos: [],
     startedSpeech: {},
-    buttonStartDisabled: false
+    buttonStartDisabled: false,
+    seconds: 0,
+    textCronometer: "00:00",
+    classFooter: "footer-white",
+    running: false
+  };
+
+  colorVerify = () => {
+    if(((this.state.startedSpeech.speech.time * 60) - this.state.seconds) <= 60){
+      if(((this.state.startedSpeech.speech.time * 60) - this.state.seconds) < 0) this.setState({classFooter: "footer-red"});
+      else {
+        if((this.state.seconds % 2) === 0) this.setState({classFooter: "footer-red"});
+        else this.setState({classFooter: "footer-black"});
+      }
+    }
+  }
+
+  runClocker = () => {
+    setInterval(() => {
+      if(this.state.running){
+          this.setState({seconds: this.state.seconds + 1});
+          this.setState({textCronometer: `${("0" + Math.floor((this.state.seconds / 60))).slice(-2)}:${("0" + (this.state.seconds % 60)).slice(-2)}`});
+          this.colorVerify();
+      }
+    }, 1000);
   };
 
   componentDidMount = async e => {
@@ -19,6 +43,9 @@ export default class ListaDiscursos extends Component {
     if(lastCommand.method === "start"){
       this.setState({buttonStartDisabled: true});
       this.setState({startedSpeech: lastCommand});
+      this.setState({running: true});
+      this.setState({seconds: (Math.floor(new Date().getTime() / 1000) - Math.floor(new Date(lastCommand.speech.startedAt).getTime() / 1000))});
+      this.runClocker();
     }
   };
 
@@ -27,7 +54,22 @@ export default class ListaDiscursos extends Component {
     if(!!data.msg) alert(data.msg);
     else {
       this.setState({buttonStartDisabled: true});
-      this.setState({startedSpeech: data});
+      this.setState({startedSpeech: {method:"start", speech: data}});
+      this.setState({running: true});
+      this.runClocker();
+    };
+  };
+
+  stopSpeech = async () => {
+    const { data } = await api.get(`/speeches/stop`);
+    if(!!data.msg) alert(data.msg);
+    else {
+      this.setState({buttonStartDisabled: false});
+      this.setState({startedSpeech: {}});
+      this.setState({seconds: 0});
+      this.setState({textCronometer: "00:00"});
+      this.setState({classFooter: "footer-white"});
+      this.setState({running: false});
     };
   };
 
@@ -66,8 +108,19 @@ export default class ListaDiscursos extends Component {
           </table>
         </div>
 
-        <footer>
-          00:00
+        <footer className={this.state.classFooter}>
+          <div className="speech-details">
+
+          </div>
+          <div className="clock-view">
+            { this.state.textCronometer }
+            <div className="clock-stop" onClick={ () => this.stopSpeech() }>
+
+            </div>
+          </div>
+          <div className="clock-functions">
+
+          </div>
         </footer>
       </div>
     );
