@@ -1,15 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import CadastroDiscursos from './components/CadastroDiscursos';
 import SpeechesList from './pages/Speeches';
+import Clock from './pages/Clock';
 
 const Routes = () => (
     <Router>
         <Switch>
-            <Route exact path="/" component={() => <h1>MAIN</h1>}></Route>
             <Route exact path="/discursos" component={SpeechesList}></Route>
-            <Route exact path="/discursos/new" component={CadastroDiscursos}></Route>
+            <Route exact path="/clock" component={Clock}></Route>
         </Switch>
     </Router>
 );

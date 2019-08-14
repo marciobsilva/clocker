@@ -5,7 +5,7 @@ const speechModel = [
     'title', 'time', 'day_id'
 ];
 
-const startSpeech = (pathToSpeech, pathToLastCommand, idSpeech) => {
+const startSpeech = (pathToSpeech, pathToLastCommand, idSpeech, io, sockets) => {
     var response = null;
 
     var lastCommand = utils.readFile(pathToLastCommand);
@@ -24,6 +24,9 @@ const startSpeech = (pathToSpeech, pathToLastCommand, idSpeech) => {
             else {
                 lastCommand.method = "start";
                 lastCommand.speech = response;
+                sockets.forEach(socket => {
+                    io.to(socket).emit("start", response);
+                });
                 fs.writeFile(pathToLastCommand, JSON.stringify(lastCommand, null, 2), errLastCommand => {
                     if(!!errLastCommand) response = {"msg":"Erro grave ao salvar último comando!"};
                 })
@@ -34,7 +37,7 @@ const startSpeech = (pathToSpeech, pathToLastCommand, idSpeech) => {
     return response;
 };
 
-const stopSpeech = (pathToSpeech, pathToLastCommand) => {
+const stopSpeech = (pathToSpeech, pathToLastCommand, io, sockets) => {
     var response = null;
 
     var lastCommand = utils.readFile(pathToLastCommand);
@@ -52,6 +55,9 @@ const stopSpeech = (pathToSpeech, pathToLastCommand) => {
             else {
                 lastCommand.method = "stop";
                 lastCommand.speech = response;
+                sockets.forEach(socket => {
+                    io.to(socket).emit("stop", response);
+                });
                 fs.writeFile(pathToLastCommand, JSON.stringify(lastCommand, null, 2), errLastCommand => {
                     if(!!errLastCommand) response = {"msg":"Erro grave ao salvar último comando!"};
                 })
@@ -97,13 +103,13 @@ module.exports = {
     start(req, res){
         const { id } = req.query;
 
-        const response = startSpeech(req.PATH_SPEECHES, req.LAST_COMMAND, id);
+        const response = startSpeech(req.PATH_SPEECHES, req.LAST_COMMAND, id, req.io, req.socketsId);
 
         res.send(response);
     },
 
     stop(req, res){
-        const response = stopSpeech(req.PATH_SPEECHES, req.LAST_COMMAND);
+        const response = stopSpeech(req.PATH_SPEECHES, req.LAST_COMMAND, req.io, req.socketsId);
 
         res.send(response);
     },

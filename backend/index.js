@@ -1,8 +1,15 @@
 const express = require('express');
 const cors = require('cors');
-const server = express();
-
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 const fs = require('fs');
+
+var socketsId = [];
+
+io.on('connection', socket => {
+    socketsId.push(socket.id);
+});
 
 const PATH_SPEECHES = './data/speeches.json';
 const PATH_AI_SPEECHES = './data/ai/speeches.json';
@@ -36,18 +43,20 @@ if(!fs.existsSync(LAST_COMMAND)){
     fs.writeFile(LAST_COMMAND, '{ "method":"stop", "speech":null }', (err) => { console.log(err) });
 }
 
-server.use((req, res, next) => {
+app.use((req, res, next) => {
     req.PATH_SPEECHES = PATH_SPEECHES;
     req.PATH_AI_SPEECHES = PATH_AI_SPEECHES;
     req.PATH_DIAS = PATH_DAYS;
     req.PATH_AI_DIAS = PATH_AI_DAYS;
     req.LAST_COMMAND = LAST_COMMAND;
+    req.io = io;
+    req.socketsId = socketsId;
 
     next();
 });
 
-server.use(express.json());
-server.use(cors());
-server.use(require('./src/routes'));
+app.use(express.json());
+app.use(cors());
+app.use(require('./src/routes'));
 
 server.listen(3001);

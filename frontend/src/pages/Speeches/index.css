@@ -33,6 +33,11 @@ footer {
     font-weight: bolder;
 }
 
+div.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
 .footer-white {
     background-color: #f0f0f0;
     color: black;
