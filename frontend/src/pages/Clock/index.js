@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import './index.css';
 
+const api = require('../../services/api');
+
 export default function Clock(){
     const [running, setRunning] = useState(false);
     const [seconds, setSeconds] = useState(0);
@@ -9,15 +11,31 @@ export default function Clock(){
     const [classFooter, setClassFooter] = useState("body-clock");
     const [speech, setSpeech] = useState({});
 
+    const beginClock = async () => {
+        const { data } = await api.get('/speeches');
+        const { lastCommand } = data;
+        setSpeech(lastCommand.speech);
+
+        if(lastCommand.method === "start"){
+            setRunning(true);
+            setSeconds((Math.floor(new Date().getTime() / 1000) - Math.floor(new Date(lastCommand.speech.startedAt).getTime() / 1000)));
+        }
+    };
+
     useEffect(() => {
+        beginClock();
+
         const socket = io('http://localhost:3001');
         socket.on("start", data => {
             setRunning(true);
             setSeconds(1);
+            setSpeech(data);
         });
 
         socket.on("stop", data => {
             setRunning(false);
+            setClassFooter("body-clock");
+            setSpeech({});
         });
     }, []);
 
@@ -43,7 +61,7 @@ export default function Clock(){
         if(((speech.time * 60) - seconds) < 0) setClassFooter("body-clock-red");
         else {
           if((seconds % 2) === 0) setClassFooter("body-clock-red");
-          else setClassFooter("body-clock-black");
+          else setClassFooter("body-clock-white");
         }
       }
     }
