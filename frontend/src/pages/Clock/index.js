@@ -45,6 +45,7 @@ export default function Clock(){
                 setSeconds(seconds + 1);
             }
         }, 1000);
+    // eslint-disable-next-line
     }, [ seconds ]);
 
     useEffect(() => {
@@ -54,6 +55,7 @@ export default function Clock(){
             setTextCronometer(`00:00`);
             setSeconds(0);
         };
+    // eslint-disable-next-line
     }, [ seconds ]);
 
     const colorVerify = () => {
