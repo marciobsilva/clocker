@@ -70,12 +70,22 @@ const stopSpeech = (pathToSpeech, pathToLastCommand, io, sockets) => {
 
 module.exports = {
     list(req, res){
-        const { day } = req.query;
+        const { dayParam } = req.query;
 
-        if(day === undefined) speeches = utils.readFile(req.PATH_SPEECHES);
+        if(dayParam === undefined) speeches = utils.readFile(req.PATH_SPEECHES);
         else speeches = utils.readFileFilter(req.PATH_SPEECHES, 'day_id', day);
 
         const lastCommand = utils.readFile(req.LAST_COMMAND);
+        const days = utils.readFile(req.PATH_DAYS);
+        speeches = speeches.map(speech => {
+            day = days.filter( day => {
+                return day.id == speech.day_id;
+            });
+
+            speech.day = day[0];
+
+            return speech;
+        });
 
         res.send({speeches, lastCommand});
     },

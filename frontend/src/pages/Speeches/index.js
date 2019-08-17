@@ -16,7 +16,6 @@ export default function Speeches() {
         const { data } = await api.get("/speeches");
         const { speeches, lastCommand } = data;
         if(lastCommand.method === 'start'){
-            console.log(lastCommand);
             setStartedSpeech(lastCommand);
             setSeconds(Math.floor(new Date().getTime() / 1000) - Math.floor(new Date(lastCommand.speech.startedAt).getTime() / 1000));
             setRunnning(true);
@@ -29,21 +28,11 @@ export default function Speeches() {
     }, []);
 
     useEffect(() => {
-        if(running === false) {
-            setSeconds(0);
-            setStartedSpeech({});
-            setClassFooter("footer-white");
-            setTextCronometer("00:00");
-        }
-    }, [ running, seconds ]);
-
-    useEffect(() => {
-        console.log(running, seconds);
         if(running === true){
+            setTextCronometer(`${formatMinutes()}:${("0" + (seconds % 60)).slice(-2)}`);
+            colorVerify();
             setTimeout(() => {
                 setSeconds(seconds + 1);
-                setTextCronometer(`${formatMinutes()}:${("0" + (seconds % 60)).slice(-2)}`);
-                colorVerify();
             }, 1000);
         }
     // eslint-disable-next-line
@@ -94,6 +83,7 @@ export default function Speeches() {
               <table>
                   <thead>
                     <tr>
+                      <th>Dia</th>
                       <th>Título</th>
                       <th>Tempo (Minutos)</th>
                       <th>Ação</th>
@@ -103,6 +93,7 @@ export default function Speeches() {
                       {
                         speeches.map(speech => (
                             <tr key={ speech.id }>
+                                <td>{ speech.day.description }</td>
                                 <td>{ speech.title }</td>
                                 <td>{ speech.time }</td>
                                 <td>

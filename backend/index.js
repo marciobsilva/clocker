@@ -46,8 +46,8 @@ if(!fs.existsSync(LAST_COMMAND)){
 app.use((req, res, next) => {
     req.PATH_SPEECHES = PATH_SPEECHES;
     req.PATH_AI_SPEECHES = PATH_AI_SPEECHES;
-    req.PATH_DIAS = PATH_DAYS;
-    req.PATH_AI_DIAS = PATH_AI_DAYS;
+    req.PATH_DAYS = PATH_DAYS;
+    req.PATH_AI_DAYS = PATH_AI_DAYS;
     req.LAST_COMMAND = LAST_COMMAND;
     req.io = io;
     req.socketsId = socketsId;

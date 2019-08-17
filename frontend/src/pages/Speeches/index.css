@@ -6,16 +6,38 @@
 }
 
 .list-speeches-container table {
-    border: 1px solid black;
+    border: 2px solid black;
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 70px;
 }
 
+.list-speeches-container table tr {
+    height: 50px;
+    font-weight: bold;
+}
+
+.list-speeches-container table td button.startSpeech {
+    background-color: rgb(1, 134, 1);
+    border: 1px solid green;
+    padding: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+.list-speeches-container table td button.startSpeech:hover {
+    background-color: rgb(2, 180, 2);
+    border: 1px solid forestgreen;
+}
+.list-speeches-container table td button.startSpeech:click {
+    background-color: rgb(2, 29, 180);
+    border: 1px solid forestgreen;
+}
+
 .list-speeches-container tr, th, td {
     border: 1px solid black;
     border-collapse: collapse;
-    padding: 5px; 
+    padding: 10px; 
     text-align: center;
 }
 
